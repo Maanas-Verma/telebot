@@ -31,6 +31,8 @@ while(button.get_attribute('disabled')==None):
     tokens_data += get_tokens_data(table_rows[0].get_attribute('innerHTML'))
     button.click()
     time.sleep(time_period)
+table_rows= browser.find_elements(By.XPATH,"/html/body/div[1]/section/section/main/div[2]/div[2]/div[2]/div/div[2]/div/div/div/div/div/div/div/div/div/div/table")
+tokens_data += get_tokens_data(table_rows[0].get_attribute('innerHTML'))
 
 browser.quit()
 print(len(tokens_data))
