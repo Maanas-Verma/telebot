@@ -4,7 +4,8 @@ def telSendMessage(chat_id, text, token):
     url = f'https://api.telegram.org/bot{token}/sendMessage'
     payload = {
                 'chat_id': chat_id,
-                'text': text
+                'text': text,
+                'parse_mode': 'Markdown'
                 }
    
     r = requests.post(url,json=payload)

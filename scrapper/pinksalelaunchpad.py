@@ -3,8 +3,8 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 import time
-from ps_scraper import get_tokens_data
-import pprint as pp
+
+from scrapper.ps_scrapper import get_tokens_data, get_headings
 
 def create_driver(show_browser: bool):
     """
@@ -19,20 +19,29 @@ def create_driver(show_browser: bool):
         op.add_argument('headless')
         return webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=op)
 
-time_period = 10
-browser = create_driver(show_browser=True)
+def append_data(data1, data2, headings):
+    for i in range(len(headings)):
+        data1[headings[i]]+= data2[headings[i]]
+    return data1
 
-browser.get('https://www.pinksale.finance/launchpads/advanced?chain=BSC')  
-time.sleep(time_period)
-button =  browser.find_elements(by=By.CLASS_NAME, value='ant-pagination-item-link')[1]
-tokens_data = []
-while(button.get_attribute('disabled')==None):
-    table_rows= browser.find_elements(By.XPATH,"/html/body/div[1]/section/section/main/div[2]/div[2]/div[2]/div/div[2]/div/div/div/div/div/div/div/div/div/div/table")
-    tokens_data += get_tokens_data(table_rows[0].get_attribute('innerHTML'))
-    button.click()
+def scrape_pinksale():
+    time_period = 10
+    browser = create_driver(show_browser=False)
+
+    browser.get('https://www.pinksale.finance/launchpads/advanced?chain=BSC')  
     time.sleep(time_period)
-table_rows= browser.find_elements(By.XPATH,"/html/body/div[1]/section/section/main/div[2]/div[2]/div[2]/div/div[2]/div/div/div/div/div/div/div/div/div/div/table")
-tokens_data += get_tokens_data(table_rows[0].get_attribute('innerHTML'))
+    button =  browser.find_elements(by=By.CLASS_NAME, value='ant-pagination-item-link')[1]
+    table_rows= browser.find_elements(By.XPATH,"/html/body/div[1]/section/section/main/div[2]/div[2]/div[2]/div/div[2]/div/div/div/div/div/div/div/div/div/div/table")
+    headings = get_headings(table_rows[0].get_attribute('innerHTML'))
+    tokens_data = {}
+    for head in headings: tokens_data[head]=[]
+    tokens_data = append_data(tokens_data, get_tokens_data(table_rows[0].get_attribute('innerHTML')), headings)
+    while(button.get_attribute('disabled')==None):
+        button.click()
+        time.sleep(time_period)
+        table_rows= browser.find_elements(By.XPATH,"/html/body/div[1]/section/section/main/div[2]/div[2]/div[2]/div/div[2]/div/div/div/div/div/div/div/div/div/div/table")
+        tokens_data = append_data(tokens_data, get_tokens_data(table_rows[0].get_attribute('innerHTML')), headings)
 
-browser.quit()
-print(len(tokens_data))
+    browser.quit()
+    return headings, tokens_data
+    save_data_to_csv(headings, tokens_data)

@@ -52,13 +52,36 @@ def get_tokens_data(table_data):
         else:
             table_heading.append(arr[i].text)
             head_name_map[arr[i].text]=i
+            
+    tokens_data_acc = {}
+    for i in table_heading: tokens_data_acc[i]=[]
     tokens_data = soup.find('tbody').find_all('tr')
-    tokens_arr = []
     for single_token_data in tokens_data:
         values = single_token_data.find_all('td')
-        token_data_arr = []
-        token_dir = {}
         for key in table_heading:
-            token_dir[key]=get_ele_data(key, values[head_name_map[key]])
-        tokens_arr.append(token_dir)
-    return tokens_arr
+            tokens_data_acc[key].append(get_ele_data(key, values[head_name_map[key]]))
+
+    for key in ['Audit', 'Doxx', 'KYC', 'Safu', 'discord', 'telegram', 'twitter', 'website']:
+        tokens_data_acc[key]=[]
+        for ele in tokens_data_acc['KYC/Audit' if key in ['Audit', 'Doxx', 'KYC', 'Safu'] else 'Links']:
+            tokens_data_acc[key].append(ele[key])
+    del tokens_data_acc['KYC/Audit']
+    del tokens_data_acc['Links']
+    return tokens_data_acc
+
+def get_headings(table_data):
+    soup = BeautifulSoup(table_data, 'html.parser')
+    arr = soup.find_all('th')
+    table_heading = []
+    for i in range(len(arr)):
+        if(arr[i].text==''):
+            table_heading.append('profile_link')
+        else:
+            table_heading.append(arr[i].text)
+    if('KYC/Audit' in table_heading):
+        table_heading.remove('KYC/Audit')
+        table_heading += ['Audit', 'Doxx', 'KYC', 'Safu']
+    if('Links' in table_heading):
+        table_heading.remove('Links')
+        table_heading += ['discord', 'telegram', 'twitter', 'website']
+    return table_heading

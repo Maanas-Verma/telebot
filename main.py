@@ -7,11 +7,32 @@ from dotenv import load_dotenv
 from sendChat import telSendMessage
 from retriveData import getChatDetails
 from teleConnector import connectbot
+from db_manager.pandas_read import get_validated_tokens
 
 load_dotenv()
 TOKEN = os.getenv('API_KEY')
 app = Flask(__name__)
 # connection_string = connectbot(TOKEN)
+
+
+greedings = """Hello!!, 
+I am a bot, I can help you to get the latest information about the Pinksale Launchpad.
+You can use the following commands to get the information:
+
+1. /hi - to get the greetings
+2. /info - to get the latest information about the Pinksale Launchpad
+3. /help - to get the list of commands
+"""
+
+info = """Pinksale Launchpad is a platform for launching new projects.
+The platform is based on the Binance Smart Chain and is designed to provide a safe and secure environment for launching new projects.
+"""
+help = """You can use the following commands to get the information:
+1. /sofu - to get tokens with SOFU
+2. /doxx - to get tokens with DOXX
+3. /kyc - to get tokens with KYC
+4. /audit - to get tokens with Audit
+"""
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -20,9 +41,25 @@ def index():
        
         chat_id,txt = getChatDetails(msg)
         if txt == "/hi":
-            telSendMessage(chat_id,"Hello!!", TOKEN)
+            telSendMessage(chat_id, greedings, TOKEN)
+        elif txt == "/info":
+            telSendMessage(chat_id, info, TOKEN)
+        elif txt == "/help":
+            telSendMessage(chat_id, help, TOKEN)
+        elif txt == "/sofu":
+            sofu = get_validated_tokens('Safu')
+            telSendMessage(chat_id, sofu, TOKEN)
+        elif txt == "/doxx":
+            sofu = get_validated_tokens('Doxx')
+            telSendMessage(chat_id, sofu, TOKEN)
+        elif txt == "/kyc":
+            sofu = get_validated_tokens('KYC')
+            telSendMessage(chat_id, sofu, TOKEN)
+        elif txt == "/audit":
+            sofu = get_validated_tokens('Audit')
+            telSendMessage(chat_id, sofu, TOKEN)
         else:
-            telSendMessage(chat_id,'from webhook',TOKEN)
+            telSendMessage(chat_id,'type /hi',TOKEN)
        
         return Response('ok', status=200)
     else:
