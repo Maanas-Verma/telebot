@@ -5,7 +5,8 @@ def telSendMessage(chat_id, text, token):
     payload = {
                 'chat_id': chat_id,
                 'text': text,
-                'parse_mode': 'Markdown'
+                'parse_mode': 'Markdown',
+                'disable_web_page_preview': True
                 }
    
     r = requests.post(url,json=payload)
