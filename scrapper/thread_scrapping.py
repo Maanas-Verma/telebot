@@ -49,6 +49,7 @@ class ScrapeTimeAndCategoryClass(Thread):
                     error_last_time = True
                 except:
                     error_last_time = False
+                    print('repeted')
         self.start_time = start_time_data
         self.end_time = end_time_data
         self.category = category_data
@@ -59,7 +60,7 @@ def parallet_extract_time_category(tokens_data, work_per_thread):
     numberOfTheads = len(tokens_data['Name'])//work_per_thread
     if(not (len(tokens_data['Name'])//work_per_thread)*work_per_thread==len(tokens_data['Name'])):
         numberOfTheads += 1
-    # print(numberOfTheads, len(tokens_data))
+    print(numberOfTheads, len(tokens_data))
     for i in range(numberOfTheads):
         end_index = (i+1)*work_per_thread
         if(i*work_per_thread+work_per_thread>len(tokens_data['Name'])):
@@ -69,7 +70,7 @@ def parallet_extract_time_category(tokens_data, work_per_thread):
         token_data_new['profile_link'] = tokens_data['profile_link'][i*work_per_thread:end_index]
         selenium_threads.append(ScrapeTimeAndCategoryClass(token_data_new))
         selenium_threads[-1].start()
-        # print(i*work_per_thread, end_index, 'starts')
+        print(i*work_per_thread, end_index, 'starts')
 
     #checking for ending the threads
     for i in selenium_threads:

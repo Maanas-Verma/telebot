@@ -8,6 +8,7 @@ from sendChat import telSendMessage
 from retriveData import getChatDetails
 from teleConnector import connectbot
 from db_manager.pandas_read import get_validated_tokens
+from replies.bydate import get_todays_tokens, get_tomorrows_tokens
 
 load_dotenv()
 TOKEN = os.getenv('API_KEY')
@@ -58,6 +59,18 @@ def index():
         elif txt == "/audit":
             sofu = get_validated_tokens('Audit')
             telSendMessage(chat_id, sofu, TOKEN)
+        elif txt == "/today":
+            today = get_todays_tokens(5)
+            telSendMessage(chat_id, today, TOKEN)
+        elif txt == "/tomorrow":
+            tomorrow = get_tomorrows_tokens(5)
+            telSendMessage(chat_id, tomorrow, TOKEN)
+        elif txt == "/later":
+            later = get_later_tokens(5)
+            telSendMessage(chat_id, later, TOKEN)
+        elif txt == "/3days":
+            three_days = get_3days_tokens(5)
+            telSendMessage(chat_id, later, TOKEN)
         else:
             telSendMessage(chat_id,'type /hi',TOKEN)
        
