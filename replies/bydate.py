@@ -14,6 +14,8 @@ def get_tokens_by_date(date, count):
             output += tokens_dict['Name'][ele] + "\n"
         count-=1
         if(count==0): break
+    if(output==""):
+        output = "No tokens found for " + date
     return output
 
 def get_tomorrows_tokens(count):
@@ -22,18 +24,22 @@ def get_tomorrows_tokens(count):
 
 def get_todays_tokens(count):
     today = datetime.now(timezone.utc).strftime('%Y.%m.%d')
+    print(today)
     return get_tokens_by_date(today, count)
     
 def get_later_tokens():
 
     data = ""
     plus4day = (datetime.now(timezone.utc) + timedelta(days=4)).strftime('%Y.%m.%d')
+    data = data + "\n " + plus4day + " \n"
     data = data + get_tokens_by_date(plus4day, 2)
 
     plus5day = (datetime.now(timezone.utc) + timedelta(days=5)).strftime('%Y.%m.%d')
+    data = data + "\n " + plus5day + " \n"
     data = data + get_tokens_by_date(plus5day, 2)
 
     plus6day = (datetime.now(timezone.utc) + timedelta(days=6)).strftime('%Y.%m.%d')
+    data = data + "\n " + plus6day + " \n"
     data = data + get_tokens_by_date(plus6day, 2)
 
     return data
@@ -42,12 +48,15 @@ def get_3days_tokens():
     
     data = ""
     tomorrow = (datetime.now(timezone.utc) + timedelta(days=1)).strftime('%Y.%m.%d')
+    data = data + "\n " + tomorrow + " \n"
     data = data + get_tokens_by_date(tomorrow, 2)
 
     day_after_tomorrow = (datetime.now(timezone.utc) + timedelta(days=2)).strftime('%Y.%m.%d')
+    data = data + "\n " + day_after_tomorrow + " \n"
     data = data + get_tokens_by_date(day_after_tomorrow, 2)
 
     day_after_day_after_tomorrow = (datetime.now(timezone.utc) + timedelta(days=3)).strftime('%Y.%m.%d')
+    data = data + "\n " + day_after_day_after_tomorrow + " \n"
     data = data + get_tokens_by_date(day_after_day_after_tomorrow, 2)
 
     return data

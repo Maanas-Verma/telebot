@@ -33,6 +33,10 @@ help = """You can use the following commands to get the information:
 2. /doxx - to get tokens with DOXX
 3. /kyc - to get tokens with KYC
 4. /audit - to get tokens with Audit
+5. /today - to get tokens launching today
+6. /tomorrow - to get tokens launching tomorrow
+7. /later - to get tokens launching later
+8. /3days - to get tokens launching in 3 days
 """
 
 @app.route('/', methods=['GET', 'POST'])
@@ -60,13 +64,14 @@ def index():
             sofu = get_validated_tokens('Audit')
             telSendMessage(chat_id, sofu, TOKEN)
         elif txt == "/today":
+            print('today')
             today = get_todays_tokens(5)
             telSendMessage(chat_id, today, TOKEN)
         elif txt == "/tomorrow":
             tomorrow = get_tomorrows_tokens(5)
             telSendMessage(chat_id, tomorrow, TOKEN)
         elif txt == "/later":
-            later = get_later_tokens(5)
+            later = get_later_tokens()
             telSendMessage(chat_id, later, TOKEN)
         elif txt == "/3days":
             three_days = get_3days_tokens()
