@@ -9,13 +9,14 @@ from threading import Thread
 
 class ScrapeTimeAndCategoryClass(Thread):
     
-    def __init__(self, tokens_data):
+    def __init__(self, tokens_data, thread_id):
         Thread.__init__(self)
         self.tokens_data = tokens_data
         self.start_time = None
         self.end_time = None
         self.category = None
         self.token_name = None
+        self.thread_id = thread_id
         
     def run(self):
         profile_links = self.tokens_data['profile_link']
@@ -50,6 +51,7 @@ class ScrapeTimeAndCategoryClass(Thread):
                 except:
                     error_last_time = False
                     print('repeted')
+            print('done till index number ', index, 'in thread', self.thread_id)
         self.start_time = start_time_data
         self.end_time = end_time_data
         self.category = category_data
@@ -68,7 +70,7 @@ def parallet_extract_time_category(tokens_data, work_per_thread):
         token_data_new = {}
         token_data_new['Name']=tokens_data['Name'][i*work_per_thread:end_index]
         token_data_new['profile_link'] = tokens_data['profile_link'][i*work_per_thread:end_index]
-        selenium_threads.append(ScrapeTimeAndCategoryClass(token_data_new))
+        selenium_threads.append(ScrapeTimeAndCategoryClass(token_data_new, i))
         selenium_threads[-1].start()
         print(i*work_per_thread, end_index, 'starts')
 

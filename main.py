@@ -9,6 +9,8 @@ from retriveData import getChatDetails
 from teleConnector import connectbot
 from db_manager.pandas_read import get_validated_tokens
 from replies.bydate import get_todays_tokens, get_tomorrows_tokens, get_later_tokens, get_3days_tokens
+from replies.addtax import add_tax
+from replies.bytype import get_tokens_by_category
 
 load_dotenv()
 TOKEN = os.getenv('API_KEY')
@@ -52,19 +54,18 @@ def index():
         elif txt == "/help":
             telSendMessage(chat_id, help, TOKEN)
         elif txt == "/sofu":
-            sofu = get_validated_tokens('Safu')
+            sofu = get_tokens_by_category('Safu')
             telSendMessage(chat_id, sofu, TOKEN)
         elif txt == "/doxx":
-            sofu = get_validated_tokens('Doxx')
+            sofu = get_tokens_by_category('Doxx')
             telSendMessage(chat_id, sofu, TOKEN)
         elif txt == "/kyc":
-            sofu = get_validated_tokens('KYC')
+            sofu = get_tokens_by_category('KYC')
             telSendMessage(chat_id, sofu, TOKEN)
         elif txt == "/audit":
-            sofu = get_validated_tokens('Audit')
+            sofu = get_tokens_by_category('Audit')
             telSendMessage(chat_id, sofu, TOKEN)
         elif txt == "/today":
-            print('today')
             today = get_todays_tokens(5)
             telSendMessage(chat_id, today, TOKEN)
         elif txt == "/tomorrow":
@@ -76,6 +77,9 @@ def index():
         elif txt == "/3days":
             three_days = get_3days_tokens()
             telSendMessage(chat_id, three_days, TOKEN)
+        elif txt.split(' ')[0] == "/addtax":
+            add_txt_status = add_tax(txt)
+            telSendMessage(chat_id, add_txt_status, TOKEN)
         else:
             telSendMessage(chat_id,'type /hi',TOKEN)
        
@@ -84,8 +88,16 @@ def index():
         return "<h1>Welcome!</h1>"
 
 if __name__ == '__main__':
-    context = ('certificate.crt', 'private.key')#certificate and key files
+    # creating a thread for running file scrape.py
+    from scrape import ScrapeThread
+    ScrapeThread().start()
+
+
+
+    # context = ('certificate.crt', 'private.key')#certificate and key files
 
     # app.run(host='0.0.0.0', port=443, debug=True,ssl_context=context)
-    app.run(debug=True, port=5002)
+    from waitress import serve
+    serve(app, host="0.0.0.0", port=5002)
+    # app.run(debug=True, port=5002)
     # connection_string = connectbot(TOKEN)
