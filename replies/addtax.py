@@ -5,9 +5,13 @@ def add_tax(txt):
         return "Invalid command"
     elif(len(txt.split(' ')) < 4):
         return "Please provide in the format \ntoken\_name buy\_tax sell\_tax \neg: /addtax PINK 10 10"
-    token_name = txt.split(' ')[1]
-    buy_tax = txt.split(' ')[2]
-    sell_tax = txt.split(' ')[3]
+    token_name = ''
+    for i in range(1, len(txt.split(' ')) - 2):
+        token_name += txt.split(' ')[i] + ' '
+    token_name = token_name.strip()
+    print(token_name)
+    buy_tax = txt.split(' ')[-2]
+    sell_tax = txt.split(' ')[-1]
 
     # validate token name
     tokens_data = pd.read_csv('pinksale_launchpad.csv')

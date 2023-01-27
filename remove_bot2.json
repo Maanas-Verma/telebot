@@ -1,0 +1,31 @@
+{
+    "update_id":438837086,
+    "message":{
+       "message_id":110,
+       "from":{
+          "id":939731224,
+          "is_bot":false,
+          "first_name":"angry",
+          "last_name":"nutts",
+          "language_code":"en"
+       },
+       "chat":{
+          "id":-1001839808987,
+          "title":"test grp",
+          "type":"supergroup"
+       },
+       "date":1674825382,
+       "left_chat_participant":{
+          "id":5941504989,
+          "is_bot":true,
+          "first_name":"assistant",
+          "username":"FireSearchbot"
+       },
+       "left_chat_member":{
+          "id":5941504989,
+          "is_bot":true,
+          "first_name":"assistant",
+          "username":"FireSearchbot"
+       }
+    }
+ }

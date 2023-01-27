@@ -46,8 +46,18 @@ def index():
     if request.method == 'POST':
         msg = request.get_json()
        
-        chat_id,txt = getChatDetails(msg)
-        if txt == "/hi":
+        chat_id, txt, status = getChatDetails(msg)
+        if len(txt.split('@'))>1:
+            print(txt.split('@')[1], os.getenv('BOT_NAME'))
+            if txt.split('@')[1]!=os.getenv('BOT_NAME'):
+                print('they are not equal')
+                return Response('ok', status=200)
+            txt = txt.split('@')[0]
+        if status == 'bot_removed':
+            return Response('ok', status=200)
+        elif status == 'left':
+            return Response('ok', status=200)
+        elif txt == "/hi":
             telSendMessage(chat_id, greedings, TOKEN)
         elif txt == "/info":
             telSendMessage(chat_id, info, TOKEN)
@@ -77,11 +87,11 @@ def index():
         elif txt == "/3days":
             three_days = get_3days_tokens()
             telSendMessage(chat_id, three_days, TOKEN)
-        elif txt.split(' ')[0] == "/addtax":
+        elif txt.split(' ')[0] == "/addtax" and os.getenv('ADMIN_GROUP') == str(chat_id):
             add_txt_status = add_tax(txt)
             telSendMessage(chat_id, add_txt_status, TOKEN)
         else:
-            telSendMessage(chat_id,'type /hi',TOKEN)
+            return Response('ok', status=200)
        
         return Response('ok', status=200)
     else:
@@ -89,15 +99,20 @@ def index():
 
 if __name__ == '__main__':
     # creating a thread for running file scrape.py
-    from scrape import ScrapeThread
-    ScrapeThread().start()
+    if os.getenv('SCRAPE') == 'True':
+        from scrape import ScrapeThread
+        ScrapeThread().start()
 
 
 
     # context = ('certificate.crt', 'private.key')#certificate and key files
-
     # app.run(host='0.0.0.0', port=443, debug=True,ssl_context=context)
-    from waitress import serve
-    serve(app, host="0.0.0.0", port=5002)
-    # app.run(debug=True, port=5002)
+
+    if os.getenv('HOST') == 'True':
+        from waitress import serve
+        serve(app, host="0.0.0.0", port=os.getenv('PORT'))
+    else:
+        app.run(debug=True, port=os.getenv('PORT'))
+
+
     # connection_string = connectbot(TOKEN)
